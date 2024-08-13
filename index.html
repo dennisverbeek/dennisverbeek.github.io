@@ -74,10 +74,10 @@
                     <h1>Current Temperature</h1>
                 </header>
                 <div class="temperature">
-                    28.3 °C
+                    28.5 °C
                 </div>
                 <div class="timestamp">
-                    Last updated: 2024-08-13 09:50:47
+                    Last updated: 2024-08-13 09:58:15
                 </div>
                 <div class="chart-container">
                     <canvas id="temperatureChart"></canvas>
@@ -86,10 +86,16 @@
                     &copy; 2024 Your Name or Organization
                 </footer>
                 <script>
-                    // Fetch the temperature history JSON file
-                    fetch('temperature_history.json')
-                        .then(response => response.json())
+                    // Fetch the temperature history JSON file from the correct URL
+                    fetch('https://dennisverbeek.github.io/temperature_history.json')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
                         .then(data => {
+                            console.log('Temperature history data:', data); // Log the fetched data to the console
                             const labels = data.map(entry => entry.timestamp);
                             const temperatures = data.map(entry => entry.temperature);
                             const ctx = document.getElementById('temperatureChart').getContext('2d');
