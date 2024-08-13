@@ -74,10 +74,10 @@
                     <h1>Current Temperature</h1>
                 </header>
                 <div class="temperature">
-                    27.7 °C
+                    28.2 °C
                 </div>
                 <div class="timestamp">
-                    Last updated: 2024-08-13 09:42:50
+                    Last updated: 2024-08-13 09:48:59
                 </div>
                 <div class="chart-container">
                     <canvas id="temperatureChart"></canvas>
@@ -86,36 +86,44 @@
                     &copy; 2024 Your Name or Organization
                 </footer>
                 <script>
-                    const ctx = document.getElementById('temperatureChart').getContext('2d');
-                    const temperatureData = {
-                        labels: ["2024-08-13 09:25:15", "2024-08-13 09:27:57", "2024-08-13 09:37:27", "2024-08-13 09:42:50"],
-                        datasets: [{
-                            label: 'Temperature (°C)',
-                            data: [27.6, 27.6, 27.7, 27.7],
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            fill: true,
-                            tension: 0.1
-                        }]
-                    };
-                    const config = {
-                        type: 'line',
-                        data: temperatureData,
-                        options: {
-                            scales: {
-                                x: {
-                                    type: 'time',
-                                    time: {
-                                        unit: 'minute'
+                    // Fetch the temperature history JSON file
+                    fetch('temperature_history.json')
+                        .then(response => response.json())
+                        .then(data => {
+                            const labels = data.map(entry => entry.timestamp);
+                            const temperatures = data.map(entry => entry.temperature);
+                            const ctx = document.getElementById('temperatureChart').getContext('2d');
+                            const temperatureData = {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Temperature (°C)',
+                                    data: temperatures,
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    fill: true,
+                                    tension: 0.1
+                                }]
+                            };
+                            const config = {
+                                type: 'line',
+                                data: temperatureData,
+                                options: {
+                                    scales: {
+                                        x: {
+                                            type: 'time',
+                                            time: {
+                                                unit: 'minute'
+                                            }
+                                        },
+                                        y: {
+                                            beginAtZero: false
+                                        }
                                     }
-                                },
-                                y: {
-                                    beginAtZero: false
                                 }
-                            }
-                        }
-                    };
-                    const temperatureChart = new Chart(ctx, config);
+                            };
+                            const temperatureChart = new Chart(ctx, config);
+                        })
+                        .catch(error => console.error('Error loading temperature history:', error));
                 </script>
             </body>
             </html>
